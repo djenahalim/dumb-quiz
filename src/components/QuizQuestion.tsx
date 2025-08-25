@@ -6,9 +6,57 @@ import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { BouncingBallQuestion } from "@/components/questions/BouncingBallQuestion";
+import { DotMazeGame } from "@/components/questions/DotMazeGame";
+import { DotMazeBridgeGame } from "@/components/questions/DotMazeBridgeGame";
+import { UnderseaKeyGame } from "@/components/questions/UnderseaKeyGame";
+import { TwentyOneGame } from "@/components/questions/TwentyOneGame";
+import { TwentySixGame } from "@/components/questions/TwentySixGame";
+import { ClickTheSmallestGame } from "@/components/questions/ClickTheSmallestGame";
+import { DragonHereGame } from "@/components/questions/DragonHereGame";
+import { DotMazeOffscreenGame } from "@/components/questions/DotMazeOffscreenGame";
+import { WatchCarefullyGame } from "@/components/questions/WatchCarefullyGame";
+import { TinyButtonGame } from "@/components/questions/TinyButtonGame";
+import { MemorySequenceGame } from "@/components/questions/MemorySequenceGame";
+
 
 interface QuizQuestionProps {
   question: Question;
+}
+
+function getCustomComponentForSpecialAction(action?: string) {
+    
+  switch (action) {
+
+    case "customBouncingBall":
+      return <BouncingBallQuestion />;
+    case "dotMaze":
+      return <DotMazeGame />;
+    case "dotMazeBridge":
+      return <DotMazeBridgeGame />;
+     case "seaGame":
+      return <UnderseaKeyGame />;
+    case "twentyOne":
+      return <TwentyOneGame />;
+    case "twentySix":
+      return <TwentySixGame />;
+        case "clickTheSmallest":
+      return <ClickTheSmallestGame />;
+          case "dragonHere":
+      return <DragonHereGame />;
+    case "dotMazeOffscreen":
+      return <DotMazeOffscreenGame />;
+    case "watchCarefully":
+      return <WatchCarefullyGame />;
+      case 'tinyButton':
+        return <TinyButtonGame />
+         case 'MemorySequence':
+        return <MemorySequenceGame />
+      
+    //  Add more custom games here
+    default:
+      return null;
+  }
 }
 
 export function QuizQuestion({ question }: QuizQuestionProps) {
@@ -19,9 +67,10 @@ export function QuizQuestion({ question }: QuizQuestionProps) {
     showExplanation,
     questionTimer,
     setQuestionTimer,
-    specialAction
+    specialAction,
+    currentQuestionIndex
   } = useQuiz();
-  
+
   const [timeLeft, setTimeLeft] = useState<number | null>(questionTimer);
   const [isShaking, setIsShaking] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -143,7 +192,7 @@ export function QuizQuestion({ question }: QuizQuestionProps) {
       
       return () => clearTimeout(waitTimer);
     }
-  }, [questionTimer, selectedAnswer, executeSpecialAction, checkAnswer]);
+  }, [questionTimer, selectedAnswer, executeSpecialAction, checkAnswer,currentQuestionIndex]);
   
   // Handle selecting all options
   const [selectedOptions, setSelectedOptions] = useState<Set<string>>(new Set());
@@ -166,7 +215,8 @@ export function QuizQuestion({ question }: QuizQuestionProps) {
       checkAnswer(choice);
     }
   };
-  
+
+  const customGameComponent = getCustomComponentForSpecialAction(question.specialAction);
   return (
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
@@ -182,7 +232,15 @@ export function QuizQuestion({ question }: QuizQuestionProps) {
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
+     
       <Card className="p-6 shadow-lg relative">
+        {question.specialAction !== 'twentyOne' ?(
+          <span className="question-number">{currentQuestionIndex == 12 ? '' : currentQuestionIndex + 1}.</span>
+        ):(
+          <div className="mb-6"></div>
+        )
+        }
+      
         {/* Timer if present */}
         {timeLeft !== null && (
           <div className="mb-4">
@@ -228,13 +286,17 @@ export function QuizQuestion({ question }: QuizQuestionProps) {
         </div>
         
         {/* Answer options */}
+        {/* If there's a custom component for this question, show it instead of choices */}
+      {customGameComponent ? (
+        <div className="my-4">{customGameComponent}</div>
+      )  : (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {question.choices.map((choice, index) => (
             <Button
               key={index}
               variant={selectedAnswer === choice ? "default" : "outline"}
               className={cn(
-                "h-16 text-lg",
+                "h-16 text-md",
                 selectedAnswer && selectedAnswer !== choice && selectedAnswer !== question.correctAnswer && 
                   choice !== question.correctAnswer ? "opacity-50" : "",
                 selectedAnswer === choice && choice === question.correctAnswer ? "bg-green-500 hover:bg-green-600" : "",
@@ -248,7 +310,7 @@ export function QuizQuestion({ question }: QuizQuestionProps) {
             </Button>
           ))}
         </div>
-        
+        )}
         {/* Explanation when shown */}
         {showExplanation && (
           <motion.div
@@ -256,13 +318,13 @@ export function QuizQuestion({ question }: QuizQuestionProps) {
             animate={{ opacity: 1 }}
             className="mt-6 p-3 bg-muted rounded-md"
           >
-            <p className="font-medium">
+            <p className="flex justify-center gap-2 font-medium">
               {selectedAnswer === question.correctAnswer ? (
-                <span className="text-green-600">Correct! </span>
+                <span className="text-green-600">Correct!  {question.comment}</span>
               ) : (
-                <span className="text-red-600">Wrong! </span>
+                <span className="text-red-600">Wrong!  {question.explanation}</span>
               )}
-              {question.explanation}
+             
             </p>
           </motion.div>
         )}
@@ -271,7 +333,7 @@ export function QuizQuestion({ question }: QuizQuestionProps) {
         {!selectedAnswer && question.specialAction && (
           <div className="mt-4 p-2 bg-yellow-100 rounded text-sm text-center">
             <p className="font-medium text-yellow-800">
-              {question.id === 3 && "Hint: Look for something small moving in the question"}
+{/*          
               {question.id === 4 && "Hint: Sometimes doing nothing is the best action"}
               {question.id === 5 && "Hint: Look at the dots on the letters"}
               {question.id === 6 && "Hint: Move your mouse/device rapidly"}
@@ -283,7 +345,7 @@ export function QuizQuestion({ question }: QuizQuestionProps) {
               {question.id === 14 && "Hint: Try using your keyboard for wisdom"}
               {question.id === 15 && "Hint: Count the letters in the question itself"}
               {question.id === 18 && "Hint: The answer is literally in the question"}
-              {question.id === 20 && "Hint: Just like before, patience is key"}
+              {question.id === 20 && "Hint: Just like before, patience is key"} */}
             </p>
           </div>
         )}

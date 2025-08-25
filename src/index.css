@@ -128,3 +128,16 @@
 .special-text:hover::after {
   transform: scaleX(1);
 }
+
+.question-number {
+  display: inline-block;
+  width: 3em;
+  height: 3em;
+  line-height: 2.6em;
+  border-radius: 50%;
+  background-color: white;
+  text-align: center;
+  font-weight: bold;
+  margin-right: 0.3em;
+  border: 2px solid black;
+}

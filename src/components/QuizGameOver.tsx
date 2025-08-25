@@ -5,7 +5,7 @@ import { quizData } from "@/lib/quiz-data";
 import { motion } from "framer-motion";
 
 export function QuizGameOver() {
-  const { score, hasWon, resetQuiz } = useQuiz();
+  const { score, hasWon, resetQuiz,lives } = useQuiz();
   
   return (
     <motion.div
@@ -15,27 +15,48 @@ export function QuizGameOver() {
       className="w-full max-w-md mx-auto text-center"
     >
       <Card className="p-8 shadow-lg">
-        <h2 className="text-3xl font-bold mb-6">
-          {hasWon ? "Congratulations!" : "Game Over!"}
-        </h2>
+       
         
         <div className="mb-8">
-          <p className="text-xl">
+          <h2 className="text-xl">
             {hasWon
-              ? "You've completed the Impossible Quiz!"
+              ? "You've completed the Dumb Quiz!"
               : "You ran out of lives!"}
-          </p>
+          </h2>
           <p className="text-2xl font-bold mt-4">
             Your score: {score}/{quizData.length}
           </p>
           
-          {score === quizData.length ? (
-            <p className="mt-4 text-green-600">Perfect Score! You're a genius... or a cheater! 🧐</p>
-          ) : score >= quizData.length / 2 ? (
-            <p className="mt-4 text-blue-600">Not bad! But there's room for improvement!</p>
-          ) : (
-            <p className="mt-4 text-amber-600">Well... they don't call it "Impossible" for nothing!</p>
-          )}
+          {lives === 3 ? (
+              <>
+              <p className="mt-4 text-green-600">Perfect Score! But I’m sure you had to play this quiz so many times — so go get a life!</p>
+              <div className="mt-6 flex justify-center">
+              <div className="w-20 h-20 rounded-full border-4 border-green-600 flex items-center justify-center text-green-600 text-5xl font-bold">
+                A
+              </div>
+            </div>
+              </>
+            
+          ) : (lives > 0 ?(
+            <>
+            <p className="mt-4 text-red-600"> This is OUTRAGEOUS! You are absolutely useless! You barely finished the dumb quiz, and what is with all the lives you’ve lost?  
+              My suggestion is you try again — if you dare!</p>
+             <div className="mt-6 flex justify-center">
+                <div className="w-20 h-20 rounded-full border-4 border-red-600 flex items-center justify-center text-red-600 text-5xl font-bold">
+                  F
+                </div>
+              </div>
+              </>
+          ): (    <> <p className="mt-4 text-red-600"> Congratulations! You’ve unlocked the secret ending: <b>total embarrassment!</b> you are as dumb as a bag of sand! Replay and pretend this never happened.</p>
+                  <div className="mt-6 flex justify-center">
+      <div className="w-20 h-20 rounded-full border-4 border-red-600 flex items-center justify-center text-red-600 text-5xl font-bold">
+        F
+      </div>
+
+     
+    </div>
+          </>))}
+            <p className="mt-4 text-black-600"><b>Love from Halim Djenaoucine😊</b></p>
         </div>
         
         <Button onClick={resetQuiz} size="lg" className="w-full">

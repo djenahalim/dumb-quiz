@@ -17,7 +17,7 @@ export default function ImpossibleQuizGame() {
           className="max-w-lg"
         >
           <h1 className="text-5xl font-extrabold text-white mb-6">
-            The <span className="text-yellow-400">Impossible</span> Quiz
+            The <span className="text-yellow-400">Dumb</span> Quiz
           </h1>
           
           <p className="text-xl text-white/90 mb-8">
@@ -36,12 +36,15 @@ export default function ImpossibleQuizGame() {
                 size="lg" 
                 className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold text-xl px-8 py-6"
               >
-                Start the Madness!
+                Let's go!
               </Button>
             </motion.div>
             
             <p className="text-white/70 text-sm">
               Warning: May cause frustration, laughter, and severe questioning of your intelligence.
+            </p>
+             <p className="text-white/70 text-sm">
+             created by Halim Djenaoucine
             </p>
           </div>
         </motion.div>

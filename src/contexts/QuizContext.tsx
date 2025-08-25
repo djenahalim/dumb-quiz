@@ -71,7 +71,7 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
     } else {
       setLives(lives - 1);
       if (lives - 1 <= 0) {
-        setIsGameOver(true);
+        // setIsGameOver(true);
       }
       setShowExplanation(true);
     }
